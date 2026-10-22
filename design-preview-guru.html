@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Kartu Guru</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f7fc;
+            color: #102b5c;
+            padding: 40px 6%;
+        }
+
+        h1 {
+            font-size: 18px;
+            color: #123b78;
+            margin-bottom: 6px;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #7b8aa5;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 15px;
+            color: #123b78;
+            margin: 30px 0 14px;
+            border-left: 4px solid #ffd900;
+            padding-left: 10px;
+        }
+
+        /* ===== GRID ===== */
+
+        .guru-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 20px;
+        }
+
+        .kepala-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 370px));
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* ===== CARD ===== */
+
+        .guru-card {
+            position: relative;
+            overflow: hidden;
+
+            background: white;
+
+            border: 1px solid #edf1f8;
+            border-radius: 16px;
+
+            padding: 20px 16px;
+
+            text-align: center;
+
+            box-shadow: 0 3px 14px rgba(16, 43, 92, 0.07);
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease;
+        }
+
+        .guru-card::before {
+            content: "";
+
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+
+            background: linear-gradient(90deg, #0752b9, #0780df);
+
+            transform: scaleX(0);
+            transform-origin: left;
+
+            transition: transform 0.3s ease;
+        }
+
+        .guru-card:hover {
+            transform: translateY(-8px);
+
+            box-shadow: 0 16px 32px rgba(16, 43, 92, 0.16);
+        }
+
+        .guru-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .guru-card::after {
+            content: "";
+
+            position: absolute;
+            top: 0;
+            left: -80%;
+
+            width: 50%;
+            height: 100%;
+
+            background: linear-gradient(
+                100deg,
+                transparent,
+                rgba(255, 255, 255, 0.35),
+                transparent
+            );
+
+            transform: skewX(-20deg);
+
+            transition: left 0.6s ease;
+
+            pointer-events: none;
+        }
+
+        .guru-card:hover::after {
+            left: 130%;
+        }
+
+        /* FOTO */
+
+        .guru-photo {
+            position: relative;
+
+            width: 100%;
+            height: 185px;
+
+            border-radius: 14px;
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(18, 100, 207, 0.08) 0%,
+                    transparent 60%
+                ),
+                linear-gradient(180deg, #eaf3ff 0%, #f7fbff 100%);
+
+            border: 1px solid #e2ecf9;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 15px;
+
+            transition: box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .guru-photo::before {
+            content: "";
+
+            position: absolute;
+            left: -22px;
+            bottom: -22px;
+
+            width: 92px;
+            height: 92px;
+
+            border-radius: 50%;
+
+            background: rgba(18, 100, 207, 0.07);
+        }
+
+        .guru-photo::after {
+            content: "";
+
+            position: absolute;
+            right: -14px;
+            top: -14px;
+
+            width: 58px;
+            height: 58px;
+
+            border-radius: 50%;
+
+            border: 9px solid rgba(18, 100, 207, 0.14);
+        }
+
+        .guru-photo img {
+            position: relative;
+            z-index: 1;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .guru-card:hover .guru-photo {
+            border-color: #bcd7f7;
+
+            box-shadow: inset 0 0 0 2px rgba(18, 100, 207, 0.12);
+        }
+
+        .avatar-fallback {
+            width: 100%;
+            height: 100%;
+
+            background:
+                radial-gradient(
+                    circle at 75% 20%,
+                    rgba(255, 255, 255, 0.16) 0%,
+                    transparent 45%
+                ),
+                linear-gradient(135deg, #0a4da3, #1264cf);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: rgba(255, 255, 255, 0.92);
+            font-size: 46px;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .avatar-fallback small {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.55);
+        }
+
+        .guru-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: #123b78;
+
+            min-height: 40px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .guru-peran {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+
+            margin-top: 10px;
+        }
+
+        .peran-badge {
+            display: inline-block;
+            max-width: 100%;
+
+            background: linear-gradient(120deg, #0752b9, #0780df);
+            color: white;
+
+            padding: 7px 15px;
+            border-radius: 20px;
+
+            font-size: 11.5px;
+            font-weight: bold;
+            line-height: 1.35;
+        }
+
+        .peran-badge--gold {
+            background: #ffe000;
+            color: #111;
+        }
+
+        .peran-mini {
+            display: inline-block;
+
+            background: #f1f5fb;
+            border: 1px solid #e4eaf5;
+            color: #51617a;
+
+            padding: 5px 11px;
+            border-radius: 14px;
+
+            font-size: 10.5px;
+        }
+
+        .guru-card--featured {
+            padding: 26px 22px;
+        }
+
+        .guru-card--featured .guru-photo {
+            height: 235px;
+
+            background:
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(255, 224, 0, 0.2) 0%,
+                    transparent 55%
+                ),
+                linear-gradient(180deg, #fff8d6 0%, #f7fbff 60%);
+        }
+
+        .guru-card--featured .guru-photo::after {
+            border-color: rgba(255, 200, 0, 0.45);
+        }
+
+        .guru-card--featured .guru-name {
+            font-size: 21px;
+            min-height: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Demo Kartu Guru & Staff</h1>
+    <p class="note">Verifikasi visual: foto tampil utuh (object-fit: contain), ukuran proporsional.</p>
+
+    <div class="section-title">Kepala Sekolah</div>
+
+    <div class="kepala-grid">
+
+        <div class="guru-card guru-card--featured">
+
+            <div class="guru-photo">
+
+                <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='400'%3E%3Crect width='300' height='400' fill='%23123b78'/%3E%3Ccircle cx='150' cy='140' r='70' fill='%23ffe000'/%3E%3Crect x='80' y='220' width='140' height='120' rx='40' fill='%231264cf'/%3E%3Ctext x='150' y='385' font-size='20' fill='white' text-anchor='middle'%3Epotret 3:4%3C/text%3E%3C/svg%3E" alt="Kepala Sekolah">
+
+            </div>
+
+            <div class="guru-name">ir.Hj.Liliek Rahmaningsih M.MPd</div>
+
+            <div class="guru-peran">
+
+                <div class="peran-badge peran-badge--gold">Kepala Sekolah</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="section-title">Guru & Staff</div>
+
+    <div class="guru-grid">
+
+        <div class="guru-card">
+
+            <div class="guru-photo">
+
+                <img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect width='400' height='300' fill='%230752b9'/%3E%3Ccircle cx='200' cy='110' r='60' fill='%23ffe000'/%3E%3Crect x='130' y='180' width='140' height='100' rx='40' fill='%230780df'/%3E%3Ctext x='200' y='285' font-size='20' fill='white' text-anchor='middle'%3Elandscape 4:3%3C/text%3E%3C/svg%3E" alt="Guru">
+
+            </div>
+
+            <div class="guru-name">Restu Saputra, S.Kom</div>
+
+            <div class="guru-peran">
+
+                <div class="peran-badge">Guru Mata Pelajaran</div>
+                <div class="peran-mini">Produktif RPL</div>
+
+            </div>
+
+        </div>
+
+        <div class="guru-card">
+
+            <div class="guru-photo">
+
+                <div class="avatar-fallback">
+
+                    <span>BU</span>
+                    <small>Foto Belum Tersedia</small>
+
+                </div>
+
+            </div>
+
+            <div class="guru-name">Bunda Sari, S.Pd</div>
+
+            <div class="guru-peran">
+
+                <div class="peran-badge">Wali Kelas &middot; Kelas XI RPL 1</div>
+
+            </div>
+
+        </div>
+
+        <div class="guru-card">
+
+            <div class="guru-photo">
+
+                <div class="avatar-fallback">
+
+                    <span>AD</span>
+                    <small>Foto Belum Tersedia</small>
+
+                </div>
+
+            </div>
+
+            <div class="guru-name">Andi Pratama</div>
+
+            <div class="guru-peran">
+
+                <div class="peran-badge">Staff Tata Usaha</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
